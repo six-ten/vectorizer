@@ -4,7 +4,7 @@ import streamlit as st
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from contourutils import *
+from contourutils.contourutils import *
 
 import base64
 import textwrap
@@ -17,26 +17,13 @@ def render_svg(svg):
     html = r'<img src="data:image/svg+xml;base64,%s"/>' % b64
     st.write(html, unsafe_allow_html=True)
 
-def render_svg_example():
-    svg = """
-        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">
-            <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
-        </svg>
-    """
-    st.write('## Rendering an SVG in Streamlit')
-
-    st.write('### SVG Input')
-    st.code(textwrap.dedent(svg), 'svg')
-
-    st.write('### SVG Output')
-    render_svg(svg)
 
 
 
 reduction_level = st.slider("reduction level",0.0,1.5,0.01)
 k = st.number_input("number of colors ",2,256,4,2)
 
-s = st.file_uploader('enter a file ')
+s = st.file_uploader('select an image ')
 run = False 
 if s != None :
     nparr = np.fromstring(s.read(), np.uint8)
@@ -144,7 +131,7 @@ def vectorize(image,output_file='result.svg'):
     global k 
     IMG_SHAPE = image.shape
     f = open(output_file,'w')
-    svg_content = [svg_head.format(width=image.shape[0],height=image.shape[1])]
+    svg_content = [svg_head.format(width=image.shape[1],height=image.shape[0])]
     
     centers,labels,pixel_values = k_means_segment(image,k)
     
